@@ -1,6 +1,7 @@
 package com.erotic.pushnotifications;
 
 import com.erotic.pushnotifications.fcm.FcmNotifier;
+import com.erotic.pushnotifications.fcm2.FCMNotifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ public class SampleController {
     @Autowired
     private FcmNotifier notifier;
 
+    @Autowired
+    private FCMNotifier notifierNew;
+
     @Value("${app.topic}")
     private String topic;
 
@@ -29,5 +33,11 @@ public class SampleController {
         notifier.send(topic, title, body);
 
         return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @GetMapping("/notify/new")
+    public ResponseEntity<String> notifyNew(@RequestParam(required = false, defaultValue = "Hello") String title,
+                                         @RequestParam(required = false, defaultValue = "Hello World!") String body) {
+        return new ResponseEntity<>(notifierNew.send(title, body), HttpStatus.OK);
     }
 }
